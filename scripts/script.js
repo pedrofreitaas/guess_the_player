@@ -15,13 +15,17 @@ let player_component_innerHTML_pattern =
 </div>
 `;
 
-export function retrieveRandomPlayerID() {
-	return 1;
+async function retrieveRandomPlayerID() {
+	const players = fb.collection(fb.db, '/players');
+	
+	const playersSnapshot = await fb.getDocs(players);
+
+	const ids = playersSnapshot.docs.map(doc => doc.id)
+
+	return ids[Math.floor(Math.random() * ids.length)];
 };
 
 function fitPlayerInfoIntoHTML( playerInfo ) {
-	console.log(playerInfo);
-
 	let player_innerHTML = player_component_innerHTML_pattern.replace("##name", playerInfo.name);
 	player_innerHTML = player_innerHTML.replace("##path_to_pic", playerInfo.path_to_pic);
 	player_innerHTML = player_innerHTML.replace("##age", playerInfo.age);
@@ -50,9 +54,7 @@ async function getPLayerByID( id ) {
 async function generatePlayer() {
 	try {
 		const docRef = await fb.addDoc( fb.collection(fb.db, "/players"), {
-										a: "teste",
-										b: 121221,
-										c: false
+
 										});
 
 		console.log(`Written player with id: ${docRef}`);
@@ -62,7 +64,7 @@ async function generatePlayer() {
 
 }
 
-export async function createPlayerContainer( playerID ) {
+async function createPlayerContainer( playerID ) {
 	let newPlayer = document.createElement("div");
 
 	const playerInfo = await getPLayerByID(playerID);
@@ -74,6 +76,26 @@ export async function createPlayerContainer( playerID ) {
 	document.body.append(newPlayer);
 };
 
-export async function createRandomPlayerContainer() {
-	await createPlayerContainer( retrieveRandomPlayerID() );
+async function createRandomPlayerContainer() {
+	await createPlayerContainer( await retrieveRandomPlayerID() );
 };
+
+// await createRandomPlayerContainer();
+
+async function testAPI() {
+	let response = await fetch("https://api.football-data.org/v4/competitions/SA/scorers", { 
+		method: "GET",
+		headers: {
+			"Accept": "*/*",
+			"X-Auth-Token": "a350206d55574584b9d29d30aa5b30f2",
+		},
+		origin: "http://localhost",
+	});
+
+	console.log(response);
+
+	let data = await response.text();
+	console.log(data);
+};
+
+await testAPI();
