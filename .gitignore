@@ -1,3 +1,7 @@
 *.json
 node_modules/*
+.firebase/hosting.cHVibGlj.cache
 imgs/*
+
+firebase.json
+.firebaserc

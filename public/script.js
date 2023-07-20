@@ -1,5 +1,3 @@
-import * as fb from "./firebase.js"
-
 async function retrieveRandomPlayerIDWithMinRating(minimum_rating) {	
 	while (true) {
 		const response = await fetch(`https://futdb.app/api/players?page=${Math.floor( Math.random() * 944+1 )}`,
@@ -91,4 +89,4 @@ async function createRandomPlayerContainer(min_rating = 80) {
 	await createPlayerContainer( await retrieveRandomPlayerIDWithMinRating(min_rating) );
 };
 
-await createRandomPlayerContainer(60);
+await createRandomPlayerContainer(85);
