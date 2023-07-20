@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "firebase": "^8.6.8",
     "http": "^0.0.1-security",
     "require": "^0.4.4"
   }
