@@ -1,7 +1,22 @@
 import * as fb from "./firebase.js"
 
-async function retrieveRandomPlayerID() {
-	return Math.floor(Math.random() * 18882);
+async function retrieveRandomPlayerIDWithMinRating(minimum_rating) {	
+	while (true) {
+		const response = await fetch(`https://futdb.app/api/players?page=${Math.floor( Math.random() * 944+1 )}`,
+									{ 
+									method: "GET",
+									headers: {
+										"Accept": "*/*",
+										"X-Auth-Token": "29db2ef2-4419-4447-8253-99755c0f6a55",
+									},
+									});
+			
+		let responseJson = await response.json();
+
+		let playersWithSufficientOver = responseJson.items.filter(player => player.rating >= minimum_rating);
+
+		if(playersWithSufficientOver.length > 0) return playersWithSufficientOver[0].id;
+	}
 };
 
 async function fitPlayerInfoIntoHTML( playerJSON ) {
@@ -30,12 +45,12 @@ async function fitPlayerInfoIntoHTML( playerJSON ) {
 									})
 
 	return `
-	<h3 class="player_name"> ${playerJSON.commonName} </h3>
-	<img width="90px" height="90px" src="${URL.createObjectURL(await playerImgResp.blob())}">
-	<h3> ${playerJSON.rating} </h3>
+	<h1 class="player_name"> ${playerJSON.commonName} </h1>
+	<img width="90px" height="90px" class="player_pic" src="${URL.createObjectURL(await playerImgResp.blob())}">
+	<h3 class="player_rating"> ${playerJSON.rating} </h3>
 	<p class="player_info">
 		Date of Birth: ${playerJSON.birthDate} <br/>
-		Leagues: <img width="30px" height="30px" src="${URL.createObjectURL(await leagueImgResp.blob())}"> <br/>
+		League: <img width="30px" height="30px" src="${URL.createObjectURL(await leagueImgResp.blob())}"> <br/>
 		Club: <img width="30px" height="30px" src="${URL.createObjectURL(await clubImgResp.blob())}"> <br/>
 		Position: ${playerJSON.position} <br/>
 		Pace: ${playerJSON.pace} <span class="tab"> Shooting: ${playerJSON.shooting} <span class="tab"> <br/>
@@ -69,8 +84,8 @@ async function createPlayerContainer( playerID ) {
 	document.body.append(newPlayer);
 };
 
-async function createRandomPlayerContainer() {
-	await createPlayerContainer( await retrieveRandomPlayerID() );
+async function createRandomPlayerContainer(min_rating = 80) {
+	await createPlayerContainer( await retrieveRandomPlayerIDWithMinRating(min_rating) );
 };
 
-await createRandomPlayerContainer();
+await createRandomPlayerContainer(60);
