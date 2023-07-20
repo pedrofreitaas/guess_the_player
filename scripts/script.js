@@ -49,14 +49,17 @@ async function fitPlayerInfoIntoHTML( playerJSON ) {
 	<img width="90px" height="90px" class="player_pic" src="${URL.createObjectURL(await playerImgResp.blob())}">
 	<h3 class="player_rating"> ${playerJSON.rating} </h3>
 	<p class="player_info">
-		Date of Birth: ${playerJSON.birthDate} <br/>
-		League: <img width="30px" height="30px" src="${URL.createObjectURL(await leagueImgResp.blob())}"> <br/>
-		Club: <img width="30px" height="30px" src="${URL.createObjectURL(await clubImgResp.blob())}"> <br/>
-		Position: ${playerJSON.position} <br/>
-		Pace: ${playerJSON.pace} <span class="tab"> Shooting: ${playerJSON.shooting} <span class="tab"> <br/>
-		Passing: ${playerJSON.passing} <span class="tab"> Dribbling: ${playerJSON.dribbling} <span class="tab"> <br/>
-		Defending: ${playerJSON.defending} <span class="tab"> Physicality: ${playerJSON.physicality} <span class="tab"> <br/>
+		<i class="fa-solid fa-baby" style="color: #0c2145;"></i> Date of Birth: ${playerJSON.birthDate} <br/>
+		<i class="fa-solid fa-trophy" style="color: #07155a;"></i> League: <img class="icon" width="30px" height="30px" src="${URL.createObjectURL(await leagueImgResp.blob())}"> <br/>
+		<i class="fa-solid fa-scroll" style="color: #0f203e;"></i> Club: <img class="icon" width="30px" height="30px" src="${URL.createObjectURL(await clubImgResp.blob())}"> <br/>
+		<i class="fa-solid fa-futbol" style="color: #112a55;"></i> Position: ${playerJSON.position} <br/>
 	</p>
+	<div class="player_atrib_line_l"> <i class="fa-solid fa-person-running" style="color: #1e3c71;"></i> Pace: ${playerJSON.pace} </div>
+	<div class="player_atrib_line_r"> <i class="fa-solid fa-meteor" style="color: #102446;"></i> Shooting: ${playerJSON.shooting} </div>
+	<div class="player_atrib_line_l"> <i class="fa-solid fa-people-arrows" style="color: #355997;"></i> Passing: ${playerJSON.passing} </div>
+	<div class="player_atrib_line_r"> <i class="fa-solid fa-user-ninja" style="color: #142d57;"></i> Dribbling: ${playerJSON.dribbling} </div>
+	<div class="player_atrib_line_l"> <i class="fa-solid fa-shield-halved" style="color: #172f59;"></i> Defending: ${playerJSON.defending} </div>
+	<div class="player_atrib_line_r"> <i class="fa-solid fa-dumbbell" style="color: #20437e;"></i> Physicality: ${playerJSON.physicality} </div>
 	`
 }
 
