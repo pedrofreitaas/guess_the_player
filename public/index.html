@@ -19,11 +19,24 @@
             };
 
             const app = initializeApp(firebaseConfig);
+
+            window.resetPlayer = function reset_player() {fut_api.resetPlayer();};
+            window.tryToTip = function tryToTip() {fut_api.tryToTip();};
+
         </script>
 
     </head>
 
     <body>
+        <div class="game_buttons">
+            <button class="reset_player_button" onclick="resetPlayer()"> 
+                Press to reset player.
+            </button>
+
+            <button class="player_tip_button" onclick="tryToTip()">
+                Press to receive a TIP.
+            </button>
+        </div>
     </body>
 
 </html>
