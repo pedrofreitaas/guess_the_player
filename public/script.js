@@ -1,4 +1,4 @@
-const positions = ["CF", "RWB", "MD", "CAM", "CB", "LB", "RB", "SW", 
+const allPositions = ["CF", "RWB", "MD", "CAM", "CB", "LB", "RB", "SW", 
 				   "LWB", "RWB", "CM", "AM", "DM", "LM", "RM", "CF",
 				   "S", "SS"];
 
@@ -7,32 +7,13 @@ function getRandomIntegerFromTo(a=0, b=0) {
 }				   
 
 // card atributtes:
-function hideAtributte( atributteValue, type=null ) {
-	switch( type ) {
-		case "birthDate":
-			return atributteValue.slice(0, 4) + "-??-??";
+function getPossiblePositions(realPos) {
+	let possiblePositions = [allPositions[getRandomIntegerFromTo(0,allPositions.length)],
+							allPositions[getRandomIntegerFromTo(0,allPositions.length)],
+							allPositions[getRandomIntegerFromTo(0,allPositions.length)]];
+	possiblePositions[getRandomIntegerFromTo(0, 2)] = realPos;
 
-		case "rating":
-			return String(atributteValue).charAt(0) + " ?";
-
-		case "position":
-			let possiblePositions = [positions[getRandomIntegerFromTo(0, positions.length)],
-									 positions[getRandomIntegerFromTo(0, positions.length)],
-									 positions[getRandomIntegerFromTo(0, positions.length)]];
-			
-			possiblePositions[getRandomIntegerFromTo(0, 2)] = atributteValue;
-
-			return possiblePositions.join(" or ");
-
-		case "club":
-		case "league":
-		case "name":
-			return "?";
-
-		case null:
-		default:
-			return atributteValue;
-	}
+	return possiblePositions.join(" or ");
 }
 
 async function retrieveRandomPlayerIDWithMinRating(minimum_rating) {	
@@ -110,45 +91,45 @@ async function getPlayerJSONByID( id ) {
 		obtainLeagueIcon: async (leagueID) => getPlayerLeagueImgURLBy(leagueID),
 		obtainClubIcon: async (clubID) => getPlayerClubImgURLByID(clubID),
 		
-		name: responseJson.commonName,		
-		birthDate: responseJson.birthDate,
-		rating: responseJson.rating,
-		position: responseJson.position,
-		pace: responseJson.pace,
-		dribbling: responseJson.dribbling,
-		finishing: responseJson.finishing,
-		defending: responseJson.defending,
-		physicality: responseJson.physicality,
-		shooting: responseJson.shooting,
-		passing: responseJson.passing,
+		name: ["?", responseJson.commonName, 0],		
+		birthDate: [responseJson.birthDate.slice(0,4)+"-??-??", responseJson.birthDate, 0],
+		rating: [String(responseJson.rating).charAt(0)+" ?", String(responseJson.rating), 0],
+		position: [getPossiblePositions(responseJson.position), responseJson.position, 0],
+		pace: [String(responseJson.pace).charAt(0)+" ?", String(responseJson.pace), 0],
+		dribbling: [String(responseJson.dribbling).charAt(0)+" ?", String(responseJson.dribbling), 0],
+		finishing: [String(responseJson.finishing).charAt(0)+" ?", String(responseJson.finishing), 0],
+		defending: [String(responseJson.defending).charAt(0)+" ?", String(responseJson.defending), 0],
+		physicality: [String(responseJson.physicality).charAt(0)+" ?", String(responseJson.physicality), 0],
+		shooting: [String(responseJson.shooting).charAt(0)+" ?", String(responseJson.shooting), 0],
+		passing: [String(responseJson.passing).charAt(0)+" ?", String(responseJson.passing), 0],
 	};
 
 	return playerJSON;
 }
 
-async function fitPlayerJSONIntoHTML( playerJSON ) {
+async function fitPlayerJSONIntoHTML() {
 	return `
-	<h1 class="player_name"> ${hideAtributte( playerJSON.name, "name" )} </h1>
+	<h1 class="player_name"> ${playerJSON.name[playerJSON.name[2]]} </h1>
 	<img width="120px" height="120px" class="player_pic" src="${await playerJSON.obtainIcon(playerJSON.id)}">
-	<h3 class="player_rating"> ${hideAtributte( playerJSON.rating, "rating" )} </h3>
+	<h3 class="player_rating"> ${playerJSON.rating[playerJSON.rating[2]]} </h3>
 	
 	<p class="player_info">
-		<i class="fa-solid fa-baby" style="color: #0c2145;"></i> Date of Birth: ${hideAtributte(playerJSON.birthDate, "birthDate")} <br/>
+		<i class="fa-solid fa-baby" style="color: #0c2145;"></i> Date of Birth: ${playerJSON.birthDate[playerJSON.birthDate[2]]} <br/>
 		<i class="fa-solid fa-trophy" style="color: #07155a;"></i> League and Club: <img class="icon" width="30px" height="30px" src="${await playerJSON.obtainLeagueIcon(playerJSON.leagueID)}"> <img class="icon" width="30px" height="30px" src="${await playerJSON.obtainClubIcon(playerJSON.clubID)}"> <br/>
-		<i class="fa-solid fa-futbol" style="color: #112a55;"></i> Position: ${hideAtributte(playerJSON.position, "position")} <br/>
+		<i class="fa-solid fa-futbol" style="color: #112a55;"></i> Position: ${playerJSON.position[playerJSON.position[2]]} <br/>
 	</p>
 
-	<div class="player_atrib_line_l"> <i class="fa-solid fa-person-running" style="color: #1e3c71;"></i> Pace: <i id="pace"> ${hideAtributte(playerJSON.pace, "rating")} </i> </div>
-	<div class="player_atrib_line_r"> <i class="fa-solid fa-meteor" style="color: #102446;"></i> Shooting: ${hideAtributte(playerJSON.shooting, "rating")} </div>
-	<div class="player_atrib_line_l"> <i class="fa-solid fa-people-arrows" style="color: #355997;"></i> Passing: ${hideAtributte(playerJSON.passing, "rating")} </div>
-	<div class="player_atrib_line_r"> <i class="fa-solid fa-user-ninja" style="color: #142d57;"></i> Dribbling: ${hideAtributte(playerJSON.dribbling, "rating")} </div>
-	<div class="player_atrib_line_l"> <i class="fa-solid fa-shield-halved" style="color: #172f59;"></i> Defending: ${hideAtributte(playerJSON.defending, "rating")} </div>
-	<div class="player_atrib_line_r"> <i class="fa-solid fa-dumbbell" style="color: #20437e;"></i> Physicality: ${hideAtributte(playerJSON.physicality, "rating")} </div>
+	<div class="player_atrib_line_l"> <i class="fa-solid fa-person-running" style="color: #1e3c71;"></i> Pace: ${playerJSON.pace[playerJSON.pace[2]]} </div>
+	<div class="player_atrib_line_r"> <i class="fa-solid fa-meteor" style="color: #102446;"></i> Shooting: ${playerJSON.shooting[playerJSON.shooting[2]]} </div>
+	<div class="player_atrib_line_l"> <i class="fa-solid fa-people-arrows" style="color: #355997;"></i> Passing: ${playerJSON.passing[playerJSON.passing[2]]} </div>
+	<div class="player_atrib_line_r"> <i class="fa-solid fa-user-ninja" style="color: #142d57;"></i> Dribbling: ${playerJSON.dribbling[playerJSON.dribbling[2]]} </div>
+	<div class="player_atrib_line_l"> <i class="fa-solid fa-shield-halved" style="color: #172f59;"></i> Defending: ${playerJSON.defending[playerJSON.defending[2]]} </div>
+	<div class="player_atrib_line_r"> <i class="fa-solid fa-dumbbell" style="color: #20437e;"></i> Physicality: ${playerJSON.physicality[playerJSON.physicality[2]]} </div>
 	`
 }
 
-window.onload = async function choosePlayer() {
-	let playerJSON = JSON.parse( localStorage.getItem("playerJSON") );
+async function choosePlayer() {
+	playerJSON = JSON.parse( localStorage.getItem("playerJSON") );
 
 	const playerContainer = document.createElement("div");
 	playerContainer.classList.add("player_container");
@@ -163,15 +144,23 @@ window.onload = async function choosePlayer() {
 		playerJSON.obtainClubIcon = async (clubID) => getPlayerClubImgURLByID(clubID);
 		playerJSON.obtainLeagueIcon = async (leagueID) => getPlayerLeagueImgURLBy(leagueID);
 		
-		playerContainer.innerHTML = await fitPlayerJSONIntoHTML( playerJSON );
+		playerContainer.innerHTML = await fitPlayerJSONIntoHTML();
 	}
 	
 	else {
 		playerJSON = await getPlayerJSONByID( await retrieveRandomPlayerIDWithMinRating(80) );
-		playerContainer.innerHTML = await fitPlayerJSONIntoHTML(playerJSON);
+		playerContainer.innerHTML = await fitPlayerJSONIntoHTML();
 		
 		localStorage.setItem( "playerJSON", JSON.stringify(playerJSON) );
 	}
+}
+
+async function updatePlayer() {
+	let playerContainer = document.getElementsByClassName("player_container")[0];
+		
+	playerContainer.innerHTML = await fitPlayerJSONIntoHTML();
+		
+	localStorage.setItem( "playerJSON", JSON.stringify(playerJSON) );
 }
 
 export function resetPlayer() {
@@ -180,12 +169,12 @@ export function resetPlayer() {
 }
 
 var ableToTip = true;
-export function tryToTip() {
-
+const tipTime = 3; //seconds
+export async function tryToTip() {
 	if ( !ableToTip )
 		return
 
-	giveTip();
+	await giveTip();
 
 	const tipButton = document.getElementsByClassName("player_tip_button")[0];
 	tipButton.style.textDecoration = "line-through";
@@ -196,16 +185,53 @@ export function tryToTip() {
 	
 		const tipButton = document.getElementsByClassName("player_tip_button")[0];
 		tipButton.style.textDecoration = "none";
-	}, 10000);
+	}, tipTime*1000);
 }
 
 var current_tip = 0;
-function giveTip() {
-
+async function giveTip() {
 	switch (current_tip) {
+		case 0:
+			playerJSON.rating[2] = 1;
+			break;
+		
+		case 1:
+			playerJSON.birthDate[2] = 1;
+			break;
+
+		case 2:
+			playerJSON.position[2] = 1;
+			break;
+
+		case 3:
+			playerJSON.pace[2] = 1;
+			break;
+
+		case 4:
+			playerJSON.shooting[2] = 1;
+			break;
+
+		case 5:
+			playerJSON.defending[2] = 1;
+			break;
+
+		case 6:
+			playerJSON.dribbling[2] = 1;
+			break;
+
+		case 7:
+			playerJSON.physicality[2] = 1;
+			break;
+
+		case 8:
+			playerJSON.passing[2] = 1;
+			break;
 	};
-	
-	
+
+	current_tip++;
+	await updatePlayer();
 	ableToTip = false;
-	return 0;
-}
+};
+
+var playerJSON = {}
+window.onload = await choosePlayer();
