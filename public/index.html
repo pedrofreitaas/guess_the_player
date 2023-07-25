@@ -10,18 +10,19 @@
             import * as fut_api from "./script.js"
 
             const firebaseConfig = {
-            apiKey: "AIzaSyBNPG47YIbbW36_cRhD1izIVFbk5f5aH_Q",
-            authDomain: "guess-the-player-e9b3f.firebaseapp.com",
-            projectId: "guess-the-player-e9b3f",
-            storageBucket: "guess-the-player-e9b3f.appspot.com",
-            messagingSenderId: "956373188088",
-            appId: "1:956373188088:web:3734494571d97a665c2a0d"
+                apiKey: "AIzaSyBNPG47YIbbW36_cRhD1izIVFbk5f5aH_Q",
+                authDomain: "guess-the-player-e9b3f.firebaseapp.com",
+                projectId: "guess-the-player-e9b3f",
+                storageBucket: "guess-the-player-e9b3f.appspot.com",
+                messagingSenderId: "956373188088",
+                appId: "1:956373188088:web:3734494571d97a665c2a0d"
             };
 
             const app = initializeApp(firebaseConfig);
 
             window.resetPlayer = function reset_player() {fut_api.resetPlayer();};
             window.tryToTip = function tryToTip() {fut_api.tryToTip();};
+            window.userGuess = (component) => {fut_api.userGuess(component);};
 
         </script>
 
@@ -29,14 +30,25 @@
 
     <body>
         <div class="game_buttons">
-            <button class="reset_player_button" onclick="resetPlayer()"> 
+            <button class="reset_player_button" onclick="resetPlayer()">
                 <i class="fa-solid fa-arrows-rotate" style="color: #041839;"></i>
             </button>
 
             <button class="player_tip_button" onclick="tryToTip()">
                 <i class="fa-solid fa-lightbulb" style="color: #443c06;"></i>
             </button>
+
+            <input type="text" class="player_name_input" placeholder="Digit the player NAME here.">
+            <script defer>
+                const name_input = document.getElementsByClassName("player_name_input")[0];
+
+                name_input.addEventListener("keydown", function (event) {
+                    if (event.key === "Enter")
+                        userGuess(this);
+                });
+            </script>
         </div>
+
     </body>
 
 </html>
