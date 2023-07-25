@@ -7,8 +7,11 @@ On going project.
 
 Uses "https://futdb.app/" 's API, to retrieve info about FIFA's player's cards.
 
-The goal is to make a game where the user has to get what is the name of the player in the card,
-with the less info possible.
+Uses localStorage to save what have been given to the user.
+
+Has a system to allow tips only after a period of times.
+
+Reset's the game if the user gets the player's name right.
 ```
 
 ## 🛠 Languages:
