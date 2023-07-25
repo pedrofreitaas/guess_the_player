@@ -1,6 +1,6 @@
 ## Guess the player game.
 
-### Site: https://guess-the-player-e9b3f.web.app
+### Site to play: https://guess-the-player-e9b3f.web.app
 
 ```
 On going project.
@@ -17,6 +17,11 @@ with the less info possible.
 ![](https://img.shields.io/badge/-CSS-white?logo=css3&logoColor=blue&style=flat)
 
 ## Projects screenshots.
+
+```
+Final Version.
+```
+[![Video demo.](https://imgur.com/Ptvb8OQ.png)](https://youtu.be/0QNJmiksx9w)
 
 ```
 Not the final version.

@@ -29,24 +29,26 @@
     </head>
 
     <body>
-        <div class="game_buttons">
-            <button class="reset_player_button" onclick="resetPlayer()">
-                <i class="fa-solid fa-arrows-rotate" style="color: #041839;"></i>
-            </button>
+        <div id="game">
+            <div class="game_buttons">
+                <button class="reset_player_button" onclick="resetPlayer()">
+                    <i class="fa-solid fa-arrows-rotate" style="color: #041839;"></i>
+                </button>
 
-            <button class="player_tip_button" onclick="tryToTip()">
-                <i class="fa-solid fa-lightbulb" style="color: #443c06;"></i>
-            </button>
+                <button class="player_tip_button" onclick="tryToTip()">
+                    <i class="fa-solid fa-lightbulb" style="color: #443c06;"></i>
+                </button>
 
-            <input type="text" class="player_name_input" placeholder="Digit the player NAME here.">
-            <script defer>
-                const name_input = document.getElementsByClassName("player_name_input")[0];
+                <input type="text" class="player_name_input" placeholder="Digit the player NAME here.">
+                <script defer>
+                    const name_input = document.getElementsByClassName("player_name_input")[0];
 
-                name_input.addEventListener("keydown", function (event) {
-                    if (event.key === "Enter")
-                        userGuess(this);
-                });
-            </script>
+                    name_input.addEventListener("keydown", function (event) {
+                        if (event.key === "Enter")
+                            userGuess(this);
+                    });
+                </script>
+            </div>
         </div>
 
     </body>

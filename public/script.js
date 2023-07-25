@@ -1,21 +1,22 @@
-const allPositions = ["CF", "RWB", "MD", "CAM", "CB", "LB", "RB", "SW", 
-				   "LWB", "RWB", "CM", "AM", "DM", "LM", "RM", "CF",
-				   "S", "SS"];
-
 function getRandomIntegerFromTo(a=0, b=0) {
 	return Math.floor( Math.random() * b + a );
 }				   
 
-// card atributtes:
+const allPositions = ["GK", "CF", "RWB", "MD", "CAM", "CB", "LB", "RB", "SW", 
+				   	  "LWB", "RWB", "CM", "AM", "DM", "LM", "RM", "CF", "S",
+					  "SS", "ST", "LW"];
 function getPossiblePositions(realPos) {
-	let possiblePositions = [allPositions[getRandomIntegerFromTo(0,allPositions.length)],
-							allPositions[getRandomIntegerFromTo(0,allPositions.length)],
-							allPositions[getRandomIntegerFromTo(0,allPositions.length)]];
+	const allPositionsExceptReal = allPositions.filter(pos => pos!=realPos);
+
+	let possiblePositions = [allPositionsExceptReal[getRandomIntegerFromTo(0,allPositionsExceptReal.length)],
+							 allPositionsExceptReal[getRandomIntegerFromTo(0,allPositionsExceptReal.length)],
+							 allPositionsExceptReal[getRandomIntegerFromTo(0,allPositionsExceptReal.length)]];
 	possiblePositions[getRandomIntegerFromTo(0, 2)] = realPos;
 
 	return possiblePositions.join(" or ");
 }
 
+// get from player methods.
 async function retrieveRandomPlayerIDWithMinRating(minimum_rating) {	
 	while (true) {
 		const response = await fetch(`https://futdb.app/api/players?page=${Math.floor( Math.random() * 944+1 )}`,
@@ -31,7 +32,7 @@ async function retrieveRandomPlayerIDWithMinRating(minimum_rating) {
 
 		let playersWithSufficientOver = responseJson.items.filter(player => player.rating >= minimum_rating);
 
-		if(playersWithSufficientOver.length > 0) return playersWithSufficientOver[0].id;
+		if(playersWithSufficientOver.length > 0) return playersWithSufficientOver[getRandomIntegerFromTo(0, playersWithSufficientOver.length)].id;
 	}
 };
 
@@ -91,7 +92,7 @@ async function getPlayerJSONByID( id ) {
 		obtainLeagueIcon: async (leagueID) => getPlayerLeagueImgURLBy(leagueID),
 		obtainClubIcon: async (clubID) => getPlayerClubImgURLByID(clubID),
 		
-		name: ["?", responseJson.commonName, 0],		
+		name: ["?", responseJson.commonName, 0], realName: responseJson.name,	
 		birthDate: [responseJson.birthDate.slice(0,4)+"-??-??", responseJson.birthDate, 0],
 		rating: [String(responseJson.rating).charAt(0)+" ?", String(responseJson.rating), 0],
 		position: [getPossiblePositions(responseJson.position), responseJson.position, 0],
@@ -152,7 +153,7 @@ async function choosePlayer() {
 	}
 	
 	else {
-		playerJSON = await getPlayerJSONByID( await retrieveRandomPlayerIDWithMinRating(80) );
+		playerJSON = await getPlayerJSONByID( await retrieveRandomPlayerIDWithMinRating(83) );
 		playerContainer.innerHTML = await fitPlayerJSONIntoHTML();
 		
 		localStorage.setItem( "playerJSON", JSON.stringify(playerJSON) );
@@ -163,9 +164,11 @@ export function resetPlayer() {
 	localStorage.clear();
 	location.reload();
 }
+// ---------------------- 
 
+// tip system.
 var ableToTip = true;
-const tipTime = 8; //seconds
+const tipTime = 3; //seconds
 export function tryToTip() {
 	if ( !ableToTip )
 		return
@@ -176,7 +179,9 @@ export function tryToTip() {
 	giveTip();
 }
 
-var current_tip = 0;
+var current_tip = JSON.parse(localStorage.getItem("current_tip"));
+if(current_tip == null) current_tip = 0;
+
 const tips = ["rating", "birthDate", "position", "pace",
 			  "shooting", "passing", "dribbling", "defending", "physicality"];
 
@@ -184,7 +189,6 @@ function giveTip() {
 	const whichTip = tips[current_tip];
 	const atrib = document.getElementById(whichTip);
 	atrib.innerHTML = playerJSON[whichTip][1];
-	atrib.style.animation = "scale-Up-Down 5s fowards"	
 	
 	// update definer to continue showing tip after a page reload.
 	playerJSON[whichTip][2]=1;
@@ -204,18 +208,27 @@ function giveTip() {
 	}, tipTime*1000);
 
 	localStorage.setItem( "playerJSON", JSON.stringify(playerJSON) );
+	localStorage.setItem( "current_tip", JSON.stringify(current_tip) );
 };
 
 export function userGuess( inputHTML ) {
 	const guess = inputHTML.value;
+	const answer = playerJSON.realName;
 
-	if(guess === playerJSON.name[1] || guess in playerJSON.name[1].split(" ")) {
-		document.getElementById("name").innerHTML = playerJSON.name[1];
+	console.log(answer);
+
+	if(guess === answer || (answer.split(" ")).indexOf(guess) != -1) {
+		document.getElementById("name").innerHTML = answer;
 		setTimeout( () => {
 			resetPlayer();
 		}, 3000);
+
+		return
 	}
+
+	document.body.getElementsByClassName("player_name_input")[0].value = "Wrong name";
 }
+// ------------------------- //
 
 var playerJSON = {}
 window.onload = await choosePlayer();
