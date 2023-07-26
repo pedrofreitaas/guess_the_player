@@ -5,9 +5,9 @@
 ```
 Uses "https://futdb.app/" 's API, to retrieve info about FIFA's player's cards.
 
-Uses localStorage to save what have been given to the user.
+Uses localStorage to save which tips have been given to the user.
 
-Has a system to allow tips only after a period of times.
+Has a system to allow tips only after a period of time.
 
 Reset's the game if the user gets the player's name right.
 ```
