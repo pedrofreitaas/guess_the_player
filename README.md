@@ -3,8 +3,6 @@
 ### Site to play: https://guess-the-player-e9b3f.web.app
 
 ```
-On going project.
-
 Uses "https://futdb.app/" 's API, to retrieve info about FIFA's player's cards.
 
 Uses localStorage to save what have been given to the user.
